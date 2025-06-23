@@ -193,5 +193,5 @@ cython_debug/
 .cursorignore
 .cursorindexingignore
 .mov
-.txt
+
 Data/logs.txt
