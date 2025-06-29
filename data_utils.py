@@ -45,6 +45,14 @@ class Data:
         
         r.close()
     
+
+    def create_all_cleaned_parqs(self):
+
+        for ticker in self.tickers_list:
+            data = self.clean_ticker_data(ticker)
+            self.to_parquete(ticker , data)
+            
+
     #methods for retrieving and updating ticker data
     def _get_ticker_data(self , ticker:str) -> pd.DataFrame:
         '''
@@ -77,8 +85,8 @@ class Data:
             for date in information:
                 tx.write(str(date) + "\n")
         
-            if self.calculate_dividend_error(ticker , self.date[1]) >= 0.2:
-                tx.write("Split dividend anomaly")
+            # if self.calculate_dividend_error(ticker , self.date[1]) >= 0.2:
+            #     tx.write("Split dividend anomaly")
     
             tx.close()
         
@@ -141,7 +149,8 @@ class Data:
 
     def get_parquet(self , ticker):
         '''
-        Retrieves the data of a given ticker from the respective parque file
+        Retrieves the data of a given ticker from the respective parque file. If the parquet file doesn't exist. It will 
+        create the file.
         '''
         path = os.path.join('Data' , 'Clean' , f'{ticker}' + '.parquet' )
         return pd.read_parquet(path , engine='fastparquet')
@@ -174,6 +183,29 @@ class Data:
         close_on_day = data[data['Date'] == dt_object][('Close' , ticker)]
         error = abs(close_avg - close_on_day) / close_avg
         return error.iloc[0] #this can be an issue if we are to forward many days in the dataframe as it can skew the actual average.
+
+    def create_merge_prices_table(self) -> pd.DataFrame:
+        
+        path = os.path.join('Data' , 'Clean' , 'Prices.parquet')
+        if os.path.exists(path):
+            os.remove(path)
+        
+        dataframes_list = []
+       
+
+        for ticker in self.tickers_list:
+            data = self.get_parquet(ticker)
+            dataframes_list.append(data)
+
+        if len(dataframes_list) == 0:
+            raise ValueError("No Pandas df's to concat")
+        
+
+        prices_table = pd.concat(dataframes_list , ignore_index=True)
+        self.to_parquete('Price' , prices_table)
+        return prices_table
+
+
 
     
     
