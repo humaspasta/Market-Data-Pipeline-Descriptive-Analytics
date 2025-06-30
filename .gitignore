@@ -196,4 +196,19 @@ cython_debug/
 
 Data/logs.txt
 Data/logs.txt
+*.txt
+*.json
+*.pkl
+*.parquet
+*.parquet
+*.txt
 Data/logs.txt
+Data/Clean/SPY.parquet
+Data/Clean/AAPL.parquet
+Cache/joblib/data_utils/Data/_get_ticker_data/func_code.py
+Cache/joblib/data_utils/Data/_clean_ticker_data/func_code.py
+Data/logs.txt
+Data/Clean/SPY.parquet
+Data/Clean/AAPL.parquet
+*.parquet
+*.txt
