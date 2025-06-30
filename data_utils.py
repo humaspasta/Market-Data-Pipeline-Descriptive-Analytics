@@ -195,17 +195,28 @@ class Data:
 
         for ticker in self.tickers_list:
             data = self.get_parquet(ticker)
+            data = data.set_index('Date')
             dataframes_list.append(data)
 
         if len(dataframes_list) == 0:
             raise ValueError("No Pandas df's to concat")
         
 
-        prices_table = pd.concat(dataframes_list , ignore_index=True)
+        prices_table = pd.concat(dataframes_list)
         self.to_parquete('Price' , prices_table)
         return prices_table
 
+    def get_daily_return(self , ticker):
+        '''
+        Returns the daily return for a single ticker over the given period of time
+        '''
 
+        data = self.get_parquet(ticker)
+
+        last_data = data.iloc[-1][('Close' , ticker)]
+        first_data = data.iloc[0][('Close' , ticker)]
+        change =  last_data - first_data
+        return change
 
     
     
