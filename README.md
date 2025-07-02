@@ -7,9 +7,9 @@ that visualises price history, return distribution, correlations, and drawdowns.
 
 1) Clone this repository
 2) In symbols.txt, type all tickers you wish to analyze. Ensure that they are comma seperated and the ticker is a valid ticker.
-3) In the  project_one_data_pipeline notebook, change start_date and end_date variables accordingly. Dates should be a string that follows the '%Y-%m-%d' format. All of this information will be stored inside the variable 'data' which is a Data object from the data_utils.py file. 'data' will be used to manipulate and access data pertaining to the start and end date that you have inserted when creating a Data object. 
-4) To create a merged data table, run data.create_merged_prices_table(). This will return a large data frame with combined data from all tickers. This will also create a price.parquet file.
-5) All parquet files can be accessed with data.get_parquet(filename). Filename must only contain the name itself and not the .parqet. 
+3) In the  project_one_data_pipeline notebook, change start_date and end_date variables accordingly. Dates should be a string that follows the '%Y-%m-%d' format. All of this information will be stored inside the variable 'data' which is a Data object from the data_utils.py file. 'data' will be used to manipulate and access data in the start and end date range that you have specified.
+4) To create a merged data table, run data.create_merged_prices_table(). This will return a large data frame with combined data from all tickers. This will also create a price.parquet file which can be accessed later with data.get_parquet(name)
+5) All parquet files can be accessed with data.get_parquet(filename). Filename must only contain the name itself and not the .parquet. 
 6) Run all code within the notebook to get descriptive graphs, correlation heatmap, log returned histogram, and drawdown curve.
 7) Adjust paramter values or use methods inside of data_utils.py for further custom analysis.
 8) All dates forward filled will be logged in logs.txt. This file only displays the last ticker processed by data.clean_ticker_data(). This file also shows if a split dividend anomaly is present by comparing the last close value of that day to the mean of all closes over the given period of time. 
