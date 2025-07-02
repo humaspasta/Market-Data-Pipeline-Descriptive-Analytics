@@ -44,6 +44,8 @@ class Data:
                 self.tickers_list += ticks
         
         r.close()
+
+        return self.tickers_list
     
 
     def create_all_cleaned_parqs(self):
@@ -85,8 +87,8 @@ class Data:
             for date in information:
                 tx.write(str(date) + "\n")
         
-            # if self.calculate_dividend_error(ticker , self.date[1]) >= 0.2:
-            #     tx.write("Split dividend anomaly")
+            if self.calculate_dividend_error(ticker , self.date[1]) >= 0.2:
+                tx.write("Split dividend anomaly")
     
             tx.close()
         
@@ -121,6 +123,8 @@ class Data:
         #Forward fill data and
         new_data = data.resample('D').ffill()#will fill in missing days using fast forward fill
          #converting new data to a parquet
+        new_data[('Cummalitive Max' , ticker)] = new_data[('Close' , ticker)].cummax()
+        new_data[('Drawdown' , ticker)] = new_data[('Close' , ticker)] - new_data[('Cummalitive Max' , ticker)]
 
         new_dates = set(new_data.index.difference(data.index)) #finding data that was logged in the new_data
         old_dates = set(data.index)
@@ -129,6 +133,7 @@ class Data:
          # logging the dates that were added
 
         new_data = new_data.reset_index()
+
         new_data.index = range(len(new_data))
         self.to_parquete(ticker , new_data)
         self.log_data(ticker , date_diff)
@@ -171,18 +176,20 @@ class Data:
         
 
         close_values = data[('Close' , ticker)]
-        print('Close values ' + str(close_values))
+       
         close_avg = close_values.mean()
-        print("Close average " + str(close_avg))
+   
         
        
         data = data.reset_index()
 
         data.index = range(len(data))
         print(data.head())
-        close_on_day = data[data['Date'] == dt_object][('Close' , ticker)]
+        close_on_day = data.iloc[-1][('Close' , ticker)]
+    
         error = abs(close_avg - close_on_day) / close_avg
-        return error.iloc[0] #this can be an issue if we are to forward many days in the dataframe as it can skew the actual average.
+
+        return error #this can be an issue if we are to forward many days in the dataframe as it can skew the actual average.
 
     def create_merge_prices_table(self) -> pd.DataFrame:
         
@@ -202,7 +209,7 @@ class Data:
             raise ValueError("No Pandas df's to concat")
         
 
-        prices_table = pd.concat(dataframes_list)
+        prices_table = pd.concat(dataframes_list, axis=1)
         self.to_parquete('Price' , prices_table)
         return prices_table
 
