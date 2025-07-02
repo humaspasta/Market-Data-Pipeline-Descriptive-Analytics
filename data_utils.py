@@ -152,12 +152,13 @@ class Data:
         data.to_parquet(data_path, engine='fastparquet')
 
 
-    def get_parquet(self , ticker):
+    def get_parquet(self , file_name):
         '''
         Retrieves the data of a given ticker from the respective parque file. If the parquet file doesn't exist. It will 
         create the file.
+        file_name should only contain the name of the file without the .parquet at the end. 
         '''
-        path = os.path.join('Data' , 'Clean' , f'{ticker}' + '.parquet' )
+        path = os.path.join('Data' , 'Clean' , f'{file_name}' + '.parquet' )
         return pd.read_parquet(path , engine='fastparquet')
     
 
