@@ -22,6 +22,6 @@ that visualises price history, return distribution, correlations, and drawdowns.
 
 # Further Steps:
 1) Since Yahoo finance may not have data for all days within the specified range, all missing days are forward filled. Future changes will only forward fill gaps with >= 2 buisness days.
-2) logs.txt only displays one ticker but it would be more convenitent if all fast forward dates were displayed across all tickers. This will be changed in upcoming commits. 
+2) logs.txt only displays one ticker but it would be more convenient if all fast forward dates were displayed across all tickers. This will be changed in upcoming commits. 
 
 ## If any further questions, concerns, or suggestions arise, please do not hesitate to email humzap20@gmail.com
