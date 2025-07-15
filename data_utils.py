@@ -49,7 +49,9 @@ class Data:
     
 
     def create_all_cleaned_parqs(self):
-
+        '''
+        Creates all clean parquet files
+        '''
         for ticker in self.tickers_list:
             data = self.clean_ticker_data(ticker)
             self.to_parquete(ticker , data)
