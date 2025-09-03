@@ -49,7 +49,9 @@ class Data:
     
 
     def create_all_cleaned_parqs(self):
-
+        '''
+        Creates all clean parquet files
+        '''
         for ticker in self.tickers_list:
             data = self.clean_ticker_data(ticker)
             self.to_parquete(ticker , data)
@@ -82,14 +84,14 @@ class Data:
         Writes added days to the log.txt file
         '''
         
-        with open(self.log_path , 'w') as tx:
-            tx.write('Logs for ' + ticker + '\n')
+        with open(self.log_path , 'a') as tx:
+            tx.write('\nLogs for ' + ticker + '\n')
             for date in information:
                 tx.write(str(date) + "\n")
         
             if self.calculate_dividend_error(ticker , self.date[1]) >= 0.2:
-                tx.write("Split dividend anomaly")
-    
+                tx.write("\nSplit dividend anomaly")
+            tx.write('-' * 10)
             tx.close()
         
    
@@ -121,7 +123,8 @@ class Data:
         data = self.get_ticker_data(ticker)
         data.dropna(axis=0)
         #Forward fill data and
-        new_data = data.resample('D').ffill()#will fill in missing days using fast forward fill
+        new_data = data.resample('B').ffill(limit=2)#will fill in missing days using fast forward fill
+
          #converting new data to a parquet
         new_data[('Cummalitive Max' , ticker)] = new_data[('Close' , ticker)].cummax()
         new_data[('Drawdown' , ticker)] = new_data[('Close' , ticker)] - new_data[('Cummalitive Max' , ticker)]
@@ -136,6 +139,8 @@ class Data:
 
         new_data.index = range(len(new_data))
         self.to_parquete(ticker , new_data)
+        
+
         self.log_data(ticker , date_diff)
         return new_data
         
